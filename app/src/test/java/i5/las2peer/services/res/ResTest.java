@@ -118,12 +118,10 @@ public class ResTest {
         
     try {
       c.setLogin(AnonymousAgentImpl.IDENTIFIER, "");
-      ClientResponse result = c.sendRequest("GET", mainPath + "/test", """
+      ClientResponse result = c.sendRequest("POST", mainPath + "/test", """
 """);
-      System.out.println("Result of request with id: 223198: " + result.getResponse().trim());
+      System.out.println("Result of request with id: 79804: " + result.getResponse().trim());
     
-      Assert.assertEquals("[345116]", 200, result.getHttpCode());
-
     } catch (Exception e) {
       e.printStackTrace();
       fail("Exception: " + e);
@@ -131,10 +129,25 @@ public class ResTest {
     
     try {
       c.setLogin(AnonymousAgentImpl.IDENTIFIER, "");
-      ClientResponse result = c.sendRequest("POST", mainPath + "/test", """
-""");
-      System.out.println("Result of request with id: 79804: " + result.getResponse().trim());
+      ClientResponse result = c.sendRequest("GET", mainPath + "/test", """
+{}""");
+      System.out.println("Result of request with id: 223198: " + result.getResponse().trim());
     
+      Assert.assertEquals("[345116]", 200, result.getHttpCode());
+  Object response = JSONValue.parse(result.getResponse().trim());
+      // Response body has type JSON Object
+      assertThat("[120867]", response, isA(JSONObject.class));
+      
+      // Response body has field "id" has type Number
+      assertThat("[316966]", response, both(isA(JSONObject.class)).and(asJSONObject(hasField("id", isA(Number.class)))));
+      
+      // Response body has field "username" has type String
+      assertThat("[398384]", response, both(isA(JSONObject.class)).and(asJSONObject(hasField("username", isA(String.class)))));
+      
+      // Response body has field "bool" has type Boolean
+      assertThat("[394942]", response, both(isA(JSONObject.class)).and(asJSONObject(hasField("bool", isA(Boolean.class)))));
+      
+
     } catch (Exception e) {
       e.printStackTrace();
       fail("Exception: " + e);
